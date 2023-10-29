@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    .cuadrado {
+      border: 1px solid black;
+      position: absolute;
+    }
+    .nuevo{
+      background-color: yellow;
+    }
+  </style>
+
+  <body></body>
+
+  <script>
+    const COLORS = [
+      "red",
+      "blue",
+      "green",
+      "gray",
+      "pink",
+      "blue",
+      "orange",
+      "black",
+    ];
+
+    const MARCO_HEIGHT = 500;
+    const MARCO_WIDTH = 400;
+
+    const marco = (w = 210, h = 200) => {
+      let div = document.createElement("div");
+      div.style.position = "absolute";
+      div.style.width = w + "px";
+      div.style.height = h + "px";
+      div.style.border = "1px solid black";
+      return div;
+    };
+    const cuadrado = (w = 30, h = 30, l = 0, t = 0, color = "black") => {
+      let div = document.createElement("div");
+      div.style.position = "absolute";
+      div.style.width = w + "px";
+      div.style.height = h + "px";
+
+      div.style.top = t + "px";
+      div.style.left = l + "px";
+      div.style.background = color;
+      return div;
+    };
+
+    const getFigura1 = (w = 80, h = 80) => {
+      const color = COLORS[Math.floor(Math.random() * 8)];
+
+      let div = document.createElement("div");
+      div.id = "figura";
+      div.style.top = 0 + "px";
+      div.style.left = 190 + "px";
+      div.style.width = w + "px";
+      div.style.height = h + "px";
+      div.style.position = "absolute";
+
+      let arr = [
+        [
+          [30, 0],
+          [30, 30],
+          [0, 30],
+          [60, 30],
+        ],
+        [
+          [0, 0],
+          [30, 0],
+          [0, 30],
+          [30, 30],
+        ],
+        [
+          [0, 0],
+          [0, 30],
+          [0, 60],
+          [0, 90],
+        ],
+        [
+          [0, 0],
+          [0, 30],
+          [30, 30],
+          [30, 60],
+        ],
+        [
+          [0, 0],
+          [0, 30],
+          [30, 30],
+          [60, 30],
+        ]
+      ];
+
+      arr[Math.floor(Math.random() * 5)].forEach((x) => {
+        div.appendChild(cuadrado(30, 30, x[0], x[1], color));
+      });
+
+      return div;
+    };
+
+    document.body.appendChild(marco(MARCO_WIDTH, MARCO_HEIGHT));
+    document.body.appendChild(getFigura1());
+
+    const parar = () => {
+      let figura = document.getElementById("figura");
+      figura.id = "";
+
+      figura.childNodes.forEach((x) => {
+        x.classList.add("nuevo");
+        x.style.background = 'yellow'
+      });
+      let nuevo = getFigura1();
+
+      document.body.appendChild(nuevo);
+      let arrFilas = [];
+
+      document.querySelectorAll('.nuevo').forEach(x=>{
+        let left = parseInt(x.style.left);
+        let top = parseInt(x.style.top);
+     
+        arrFilas[top] = arrFilas[top] || [];
+        if((arrFilas[top]).indexOf(left)==-1){
+            arrFilas[top].push(left);
+        }
+      })
+    
+      
+      for(let ind in arrFilas ){
+        let cont=0;
+        arrFilas[ind].forEach(x=>cont++);
+        if(cont>12){
+            document.querySelectorAll('.nuevo').forEach(x=>{
+              if(parseInt(x.style.top)==ind){
+                x.remove();
+              }
+            });
+            document.querySelectorAll('.nuevo').forEach((x) => {
+                if(parseInt(x.style.top)<ind){
+                  x.style.top = parseInt(x.style.top) + 30 + "px";
+                }
+            });
+        }
+      }
+     
+
+    };
+
+    setInterval(() => {
+      let stop = validar(0, 30);
+
+      if (!stop) {
+        let figura = document.getElementById("figura");
+        figura.childNodes.forEach((x) => {
+          x.style.top = parseInt(x.style.top) + 30 + "px";
+        });
+      } else {
+        parar();
+      }
+    }, 300);
+
+    const validar = (mov = 30, movTop = 30) => {
+      let stop = false;
+      let figura = document.getElementById("figura");
+
+      document.querySelectorAll(".nuevo").forEach((x) => {
+        const topX = parseInt(x.style.top);
+        const leftX = parseInt(x.style.left);
+        figura.childNodes.forEach((y) => {
+          const topY = parseInt(y.style.top) + movTop;
+          const leftY = parseInt(y.style.left) + mov;
+          if (topY == topX && leftY == leftX) {
+            stop = true;
+          }
+        });
+      });
+
+      figura.childNodes.forEach((x) => {
+        if (parseInt(x.style.top) > MARCO_HEIGHT-30 ) {
+          stop = true;
+        }
+      });
+
+      return stop;
+    };
+
+
+    document.body.onkeydown = (e) => {
+      const key = e.key;
+
+      if (!validar(-30, 0) && key == "ArrowLeft" && costado) {
+        let figura = document.getElementById("figura");
+        figura.childNodes.forEach((x) => {
+          
+          x.style.left = parseInt(x.style.left) - 30 + "px";
+        });
+      }
+
+      if (!validar(30, 0) && key == "ArrowRight") {
+        let figura = document.getElementById("figura");
+        figura.childNodes.forEach((x) => {
+          x.style.left = parseInt(x.style.left) + 30 + "px";
+        });
+      }
+
+      if (!validar(0, 30) && key == "ArrowDown") {
+        let figura = document.getElementById("figura");
+        figura.childNodes.forEach((x) => {
+          x.style.top = parseInt(x.style.top) + 30 + "px";
+        });
+      }
+      if (!validar(0, 0) && key == "ArrowUp") {
+        let figura = document.getElementById("figura");
+        let leftini = parseInt(figura.childNodes[0].style.left);
+        let topini = parseInt(figura.childNodes[0].style.top);
+
+        figura.childNodes.forEach((x) => {
+            x.style.left = parseInt(x.style.left)-leftini + "px";
+            x.style.top = parseInt(x.style.top)-topini + "px";
+        });
+
+        figura.childNodes.forEach((x) => {
+            let left = parseInt(x.style.left);
+            x.style.left = -1*parseInt(x.style.top) + "px";
+            x.style.top = left + "px";
+        });
+
+        figura.childNodes.forEach((x) => {
+            x.style.left = parseInt(x.style.left)+leftini + "px";
+            x.style.top = parseInt(x.style.top)+topini + "px";
+        });
+      }
+    };
+  </script>
+</html>
