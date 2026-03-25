@@ -5,6 +5,7 @@ class Renderer {
     this.rows = rows;
     this.blockSize = blockSize;
     this.boardElement = null;
+    this.scoreElement = null;
     this.cells = [];
   }
 
@@ -17,6 +18,14 @@ class Renderer {
     this.boardElement.style.backgroundColor = UI_STYLES.BOARD_BG;
     this.boardElement.style.overflow = "hidden";
     this.container.appendChild(this.boardElement);
+
+    this.scoreElement = document.createElement("div");
+    this.scoreElement.style.color = "#000";
+    this.scoreElement.style.fontFamily = "monospace";
+    this.scoreElement.style.fontSize = "20px";
+    this.scoreElement.style.marginTop = "10px";
+    this.scoreElement.innerText = "Score: 0";
+    this.container.appendChild(this.scoreElement);
 
     // Initial cells creation (pool of cells)
     for (let r = 0; r < this.rows; r++) {
@@ -36,7 +45,10 @@ class Renderer {
     }
   }
 
-  draw(grid, piece) {
+  draw(grid, piece, score) {
+    if (this.scoreElement) {
+      this.scoreElement.innerText = "Score: " + score;
+    }
     // Draw solid blocks from the grid
     for (let r = 0; r < this.rows; r++) {
       for (let c = 0; c < this.columns; c++) {

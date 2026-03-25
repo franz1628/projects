@@ -20,6 +20,7 @@ class Game {
     this.rows = rows;
     this.grid = this.createGrid(columns, rows);
     this.piece = null;
+    this.score = 0;
     this.init();
   }
 
@@ -42,6 +43,7 @@ class Game {
     // Check game over
     if (this.collide()) {
       this.grid.forEach(row => row.fill(0)); // Reset game
+      this.score = 0; // Reset score
     }
   }
 
@@ -108,6 +110,7 @@ class Game {
       }
       const row = this.grid.splice(y, 1)[0].fill(0);
       this.grid.unshift(row);
+      this.score += 100;
       ++y;
     }
   }

@@ -5,7 +5,7 @@ renderer.init();
 
 function update(time = 0) {
   game.drop();
-  renderer.draw(game.grid, game.piece);
+  renderer.draw(game.grid, game.piece, game.score);
 }
 
 let dropCounter = 0;
@@ -22,7 +22,7 @@ function loop(time = 0) {
     dropCounter = 0;
   }
 
-  renderer.draw(game.grid, game.piece);
+  renderer.draw(game.grid, game.piece, game.score);
   requestAnimationFrame(loop);
 }
 
@@ -37,7 +37,7 @@ document.addEventListener("keydown", (event) => {
   } else if (event.key === "ArrowUp") {
     game.rotate();
   }
-  renderer.draw(game.grid, game.piece);
+  renderer.draw(game.grid, game.piece, game.score);
 });
 
 loop();
