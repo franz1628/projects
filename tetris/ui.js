@@ -1,4 +1,4 @@
-export const marco = (w = 210, h = 200) => {
+const marco = (w = 210, h = 200) => {
   let div = document.createElement("div");
   div.style.position = "absolute";
   div.style.width = w + "px";
@@ -7,7 +7,7 @@ export const marco = (w = 210, h = 200) => {
   return div;
 };
 
-export const cuadrado = (w = 30, h = 30, l = 0, t = 0, color = "black") => {
+const cuadrado = (w = 30, h = 30, l = 0, t = 0, color = "black") => {
   let div = document.createElement("div");
   div.style.position = "absolute";
   div.style.width = w + "px";

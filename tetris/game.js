@@ -1,7 +1,4 @@
-import { COLORS, MARCO_HEIGHT, BLOCK_SIZE } from './constants.js';
-import { cuadrado } from './ui.js';
-
-export const getFigura1 = (w = 80, h = 80) => {
+const getFigura1 = (w = 80, h = 80) => {
   const color = COLORS[Math.floor(Math.random() * 8)];
 
   let div = document.createElement("div");
@@ -52,7 +49,7 @@ export const getFigura1 = (w = 80, h = 80) => {
   return div;
 };
 
-export const validar = (mov = 30, movTop = 30) => {
+const validar = (mov = 30, movTop = 30) => {
   let stop = false;
   let figura = document.getElementById("figura");
   if (!figura) return true;
@@ -78,7 +75,7 @@ export const validar = (mov = 30, movTop = 30) => {
   return stop;
 };
 
-export const parar = () => {
+const parar = () => {
   let figura = document.getElementById("figura");
   if (!figura) return;
   figura.id = "";

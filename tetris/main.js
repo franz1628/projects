@@ -1,7 +1,3 @@
-import { MARCO_WIDTH, MARCO_HEIGHT } from './constants.js';
-import { marco } from './ui.js';
-import { getFigura1, validar, parar } from './game.js';
-
 document.body.appendChild(marco(MARCO_WIDTH, MARCO_HEIGHT));
 document.body.appendChild(getFigura1());
 

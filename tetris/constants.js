@@ -1,4 +1,4 @@
-export const COLORS = [
+const COLORS = [
   "red",
   "blue",
   "green",
@@ -9,6 +9,6 @@ export const COLORS = [
   "black",
 ];
 
-export const MARCO_HEIGHT = 500;
-export const MARCO_WIDTH = 400;
-export const BLOCK_SIZE = 30;
+const MARCO_HEIGHT = 500;
+const MARCO_WIDTH = 400;
+const BLOCK_SIZE = 30;
