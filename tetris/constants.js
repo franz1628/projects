@@ -54,3 +54,11 @@ const SHAPES = [
     [7, 7, 0],
   ],
 ];
+
+const UI_STYLES = {
+  BOARD_BORDER: "2px solid #333",
+  BOARD_BG: "#111",
+  EMPTY_CELL_BORDER: "1px solid rgba(255, 255, 255, 0.05)",
+  FILLED_CELL_BORDER: "1px solid rgba(0, 0, 0, 0.5)",
+  CELL_BG_TRANSPARENT: "transparent",
+};

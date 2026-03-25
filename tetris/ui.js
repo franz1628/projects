@@ -13,8 +13,8 @@ class Renderer {
     this.boardElement.style.position = "relative";
     this.boardElement.style.width = (this.columns * this.blockSize) + "px";
     this.boardElement.style.height = (this.rows * this.blockSize) + "px";
-    this.boardElement.style.border = "2px solid #333";
-    this.boardElement.style.backgroundColor = "#111";
+    this.boardElement.style.border = UI_STYLES.BOARD_BORDER;
+    this.boardElement.style.backgroundColor = UI_STYLES.BOARD_BG;
     this.boardElement.style.overflow = "hidden";
     this.container.appendChild(this.boardElement);
 
@@ -28,8 +28,8 @@ class Renderer {
         cell.style.height = (this.blockSize - 1) + "px";
         cell.style.left = (c * this.blockSize) + "px";
         cell.style.top = (r * this.blockSize) + "px";
-        cell.style.border = "1px solid rgba(255, 255, 255, 0.05)";
-        cell.style.backgroundColor = "transparent";
+        cell.style.border = UI_STYLES.EMPTY_CELL_BORDER;
+        cell.style.backgroundColor = UI_STYLES.CELL_BG_TRANSPARENT;
         this.boardElement.appendChild(cell);
         this.cells[r][c] = cell;
       }
@@ -42,7 +42,7 @@ class Renderer {
       for (let c = 0; c < this.columns; c++) {
         const colorIndex = grid[r][c];
         this.cells[r][c].style.backgroundColor = COLORS[colorIndex];
-        this.cells[r][c].style.border = colorIndex === 0 ? "1px solid rgba(255, 255, 255, 0.05)" : "1px solid rgba(0, 0, 0, 0.5)";
+        this.cells[r][c].style.border = colorIndex === 0 ? UI_STYLES.EMPTY_CELL_BORDER : UI_STYLES.FILLED_CELL_BORDER;
       }
     }
 
@@ -55,7 +55,7 @@ class Renderer {
             const gridC = piece.pos.x + c;
             if (gridR >= 0 && gridR < this.rows && gridC >= 0 && gridC < this.columns) {
               this.cells[gridR][gridC].style.backgroundColor = COLORS[value];
-              this.cells[gridR][gridC].style.border = "1px solid rgba(0, 0, 0, 0.5)";
+              this.cells[gridR][gridC].style.border = UI_STYLES.FILLED_CELL_BORDER;
             }
           }
         });
