@@ -1,119 +1,114 @@
-const getFigura1 = (w = 80, h = 80) => {
-  const color = COLORS[Math.floor(Math.random() * 8)];
+class Piece {
+  constructor(shape, pos = { x: 3, y: 0 }) {
+    this.shape = shape;
+    this.pos = pos;
+  }
 
-  let div = document.createElement("div");
-  div.id = "figura";
-  div.style.top = 0 + "px";
-  div.style.left = 190 + "px";
-  div.style.width = w + "px";
-  div.style.height = h + "px";
-  div.style.position = "absolute";
-
-  let arr = [
-    [
-      [30, 0],
-      [30, 30],
-      [0, 30],
-      [60, 30],
-    ],
-    [
-      [0, 0],
-      [30, 0],
-      [0, 30],
-      [30, 30],
-    ],
-    [
-      [0, 0],
-      [0, 30],
-      [0, 60],
-      [0, 90],
-    ],
-    [
-      [0, 0],
-      [0, 30],
-      [30, 30],
-      [30, 60],
-    ],
-    [
-      [0, 0],
-      [0, 30],
-      [30, 30],
-      [60, 30],
-    ]
-  ];
-
-  arr[Math.floor(Math.random() * 5)].forEach((x) => {
-    div.appendChild(cuadrado(BLOCK_SIZE, BLOCK_SIZE, x[0], x[1], color));
-  });
-
-  return div;
-};
-
-const validar = (mov = 30, movTop = 30) => {
-  let stop = false;
-  let figura = document.getElementById("figura");
-  if (!figura) return true;
-
-  document.querySelectorAll(".nuevo").forEach((x) => {
-    const topX = parseInt(x.style.top);
-    const leftX = parseInt(x.style.left);
-    figura.childNodes.forEach((y) => {
-      const topY = parseInt(y.style.top) + movTop;
-      const leftY = parseInt(y.style.left) + mov;
-      if (topY == topX && leftY == leftX) {
-        stop = true;
+  rotate() {
+    for (let y = 0; y < this.shape.length; ++y) {
+      for (let x = 0; x < y; ++x) {
+        [this.shape[x][y], this.shape[y][x]] = [this.shape[y][x], this.shape[x][y]];
       }
-    });
-  });
-
-  figura.childNodes.forEach((x) => {
-    if (parseInt(x.style.top) + movTop > MARCO_HEIGHT - BLOCK_SIZE) {
-      stop = true;
     }
-  });
+    this.shape.forEach((row) => row.reverse());
+  }
+}
 
-  return stop;
-};
+class Game {
+  constructor(columns, rows) {
+    this.columns = columns;
+    this.rows = rows;
+    this.grid = this.createGrid(columns, rows);
+    this.piece = null;
+    this.init();
+  }
 
-const parar = () => {
-  let figura = document.getElementById("figura");
-  if (!figura) return;
-  figura.id = "";
+  init() {
+    this.spawnPiece();
+  }
 
-  figura.childNodes.forEach((x) => {
-    x.classList.add("nuevo");
-    x.style.background = 'yellow';
-  });
-  
-  let nuevo = getFigura1();
-  document.body.appendChild(nuevo);
-  
-  let arrFilas = [];
-
-  document.querySelectorAll('.nuevo').forEach(x => {
-    let left = parseInt(x.style.left);
-    let top = parseInt(x.style.top);
- 
-    arrFilas[top] = arrFilas[top] || [];
-    if ((arrFilas[top]).indexOf(left) == -1) {
-      arrFilas[top].push(left);
+  createGrid(w, h) {
+    const grid = [];
+    while (h--) {
+      grid.push(new Array(w).fill(0));
     }
-  });
+    return grid;
+  }
 
-  for (let ind in arrFilas) {
-    let cont = 0;
-    arrFilas[ind].forEach(x => cont++);
-    if (cont > 12) {
-      document.querySelectorAll('.nuevo').forEach(x => {
-        if (parseInt(x.style.top) == ind) {
-          x.remove();
-        }
-      });
-      document.querySelectorAll('.nuevo').forEach((x) => {
-        if (parseInt(x.style.top) < ind) {
-          x.style.top = parseInt(x.style.top) + BLOCK_SIZE + "px";
-        }
-      });
+  spawnPiece() {
+    const type = Math.floor(Math.random() * (SHAPES.length - 1)) + 1;
+    this.piece = new Piece(JSON.parse(JSON.stringify(SHAPES[type])), { x: 3, y: 0 });
+    
+    // Check game over
+    if (this.collide()) {
+      this.grid.forEach(row => row.fill(0)); // Reset game
     }
   }
-};
+
+  collide(piece = this.piece) {
+    const [m, o] = [piece.shape, piece.pos];
+    for (let y = 0; y < m.length; ++y) {
+      for (let x = 0; x < m[y].length; ++x) {
+        if (m[y][x] !== 0 && (this.grid[y + o.y] && this.grid[y + o.y][x + o.x]) !== 0) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  merge() {
+    this.piece.shape.forEach((row, y) => {
+      row.forEach((value, x) => {
+        if (value !== 0) {
+          this.grid[y + this.piece.pos.y][x + this.piece.pos.x] = value;
+        }
+      });
+    });
+  }
+
+  rotate() {
+    const pos = this.piece.pos.x;
+    let offset = 1;
+    this.piece.rotate();
+    while (this.collide()) {
+      this.piece.pos.x += offset;
+      offset = -(offset + (offset > 0 ? 1 : -1));
+      if (offset > this.piece.shape[0].length) {
+        this.piece.rotate(); // rotate back
+        this.piece.pos.x = pos;
+        return;
+      }
+    }
+  }
+
+  drop() {
+    this.piece.pos.y++;
+    if (this.collide()) {
+      this.piece.pos.y--;
+      this.merge();
+      this.spawnPiece();
+      this.clearRows();
+    }
+  }
+
+  move(dir) {
+    this.piece.pos.x += dir;
+    if (this.collide()) {
+      this.piece.pos.x -= dir;
+    }
+  }
+
+  clearRows() {
+    outer: for (let y = this.grid.length - 1; y > 0; --y) {
+      for (let x = 0; x < this.grid[y].length; ++x) {
+        if (this.grid[y][x] === 0) {
+          continue outer;
+        }
+      }
+      const row = this.grid.splice(y, 1)[0].fill(0);
+      this.grid.unshift(row);
+      ++y;
+    }
+  }
+}

@@ -1,72 +1,43 @@
-document.body.appendChild(marco(MARCO_WIDTH, MARCO_HEIGHT));
-document.body.appendChild(getFigura1());
+const game = new Game(COLUMNS, ROWS);
+const renderer = new Renderer(document.body, COLUMNS, ROWS, BLOCK_SIZE);
 
-setInterval(() => {
-  let stop = validar(0, 30);
+renderer.init();
 
-  if (!stop) {
-    let figura = document.getElementById("figura");
-    if (figura) {
-      figura.childNodes.forEach((x) => {
-        x.style.top = parseInt(x.style.top) + 30 + "px";
-      });
-    }
-  } else {
-    parar();
-  }
-}, 300);
+function update(time = 0) {
+  game.drop();
+  renderer.draw(game.grid, game.piece);
+}
 
-document.body.onkeydown = (e) => {
-  const key = e.key;
+let dropCounter = 0;
+let dropInterval = 1000;
+let lastTime = 0;
 
-  if (key == "ArrowLeft" && !validar(-30, 0)) {
-    let figura = document.getElementById("figura");
-    if (figura) {
-      figura.childNodes.forEach((x) => {
-        x.style.left = parseInt(x.style.left) - 30 + "px";
-      });
-    }
+function loop(time = 0) {
+  const deltaTime = time - lastTime;
+  lastTime = time;
+
+  dropCounter += deltaTime;
+  if (dropCounter > dropInterval) {
+    update();
+    dropCounter = 0;
   }
 
-  if (key == "ArrowRight" && !validar(30, 0)) {
-    let figura = document.getElementById("figura");
-    if (figura) {
-      figura.childNodes.forEach((x) => {
-        x.style.left = parseInt(x.style.left) + 30 + "px";
-      });
-    }
+  renderer.draw(game.grid, game.piece);
+  requestAnimationFrame(loop);
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "ArrowLeft") {
+    game.move(-1);
+  } else if (event.key === "ArrowRight") {
+    game.move(1);
+  } else if (event.key === "ArrowDown") {
+    game.drop();
+    dropCounter = 0;
+  } else if (event.key === "ArrowUp") {
+    game.rotate();
   }
+  renderer.draw(game.grid, game.piece);
+});
 
-  if (key == "ArrowDown" && !validar(0, 30)) {
-    let figura = document.getElementById("figura");
-    if (figura) {
-      figura.childNodes.forEach((x) => {
-        x.style.top = parseInt(x.style.top) + 30 + "px";
-      });
-    }
-  }
-
-  if (key == "ArrowUp" && !validar(0, 0)) {
-    let figura = document.getElementById("figura");
-    if (figura && figura.childNodes.length > 0) {
-      let leftini = parseInt(figura.childNodes[0].style.left);
-      let topini = parseInt(figura.childNodes[0].style.top);
-
-      figura.childNodes.forEach((x) => {
-        x.style.left = parseInt(x.style.left) - leftini + "px";
-        x.style.top = parseInt(x.style.top) - topini + "px";
-      });
-
-      figura.childNodes.forEach((x) => {
-        let left = parseInt(x.style.left);
-        x.style.left = -1 * parseInt(x.style.top) + "px";
-        x.style.top = left + "px";
-      });
-
-      figura.childNodes.forEach((x) => {
-        x.style.left = parseInt(x.style.left) + leftini + "px";
-        x.style.top = parseInt(x.style.top) + topini + "px";
-      });
-    }
-  }
-};
+loop();
