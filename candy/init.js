@@ -82,11 +82,17 @@ init();
 
 
 canvas.onmousedown = (e) => {
-
     const x = e.offsetX;
     const y = e.offsetY;
     const i = Math.floor(x / lado);
     const j = Math.floor(y / lado);
+
+    if (clickCuadrado != 0 && (Math.abs(i - ultimoCuadradoClick.i) > 1 || Math.abs(j - ultimoCuadradoClick.j) > 1)) {
+        clickCuadrado = 0;
+        limpiarCuadrado(ultimoCuadradoClick.i, ultimoCuadradoClick.j);
+        agregarImagen(ultimoCuadradoClick.i, ultimoCuadradoClick.j);
+        return;
+    }
 
     if (clickCuadrado == 0) {
         pintarCuadrado(i, j);
@@ -97,7 +103,6 @@ canvas.onmousedown = (e) => {
             agregarMarco(i, j);
             agregarMarco(ultimoCuadradoClick.i, ultimoCuadradoClick.j);
 
-
             let aux = tablero[i][j];
             tablero[i][j] = tablero[ultimoCuadradoClick.i][ultimoCuadradoClick.j];
             tablero[ultimoCuadradoClick.i][ultimoCuadradoClick.j] = aux;
@@ -107,22 +112,49 @@ canvas.onmousedown = (e) => {
             agregarImagen(i, j);
             agregarImagen(ultimoCuadradoClick.i, ultimoCuadradoClick.j);
         }
-
-
     }
 
     clickCuadrado++;
     if (clickCuadrado === 2) {
+        buscarEmparejamientos();
         clickCuadrado = 0;
     }
 
-
     ultimoCuadradoClick.i = i;
     ultimoCuadradoClick.j = j;
-
-
-
 };
 
+
+buscarEmparejamientos = () => {
+    let a = -1;
+    let b = 0;
+    let n = -1;
+
+    for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 10; j++) {
+            if (n == -1) {
+                n = tablero[i][j];
+                a = j;
+                b = j;
+            } else if (tablero[i][j] == n) {
+                b = j;
+            } else if (tablero[i][j] != n) {
+                n = -1;
+                b = j;
+            }
+
+            if (b - a >= 2) {
+                desaparecerEmparejamientos(i, a, b);
+            }
+        }
+    }
+}
+
+desaparecerEmparejamientos = (i, a, b) => {
+    for (j = a; j <= b; j++) {
+        tablero[i][j] = -1;
+        limpiarCuadrado(i, j);
+    }
+}
 
 
