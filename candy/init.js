@@ -130,28 +130,28 @@ buscarEmparejamientos = () => {
     let b = 0;
     let n = -1;
 
-    for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 10; j++) {
+    for (let j = 0; j < 10; j++) {
+        for (let i = 0; i < 10; i++) {
             if (n == -1) {
                 n = tablero[i][j];
-                a = j;
-                b = j;
+                a = i;
+                b = i;
             } else if (tablero[i][j] == n) {
-                b = j;
+                b = i;
             } else if (tablero[i][j] != n) {
                 n = -1;
-                b = j;
+                b = i;
             }
 
             if (b - a >= 2) {
-                desaparecerEmparejamientos(i, a, b);
+                desaparecerEmparejamientos(j, a, b);
             }
         }
     }
 }
 
-desaparecerEmparejamientos = (i, a, b) => {
-    for (j = a; j <= b; j++) {
+desaparecerEmparejamientos = (j, a, b) => {
+    for (i = a; i <= b; i++) {
         tablero[i][j] = -1;
         limpiarCuadrado(i, j);
     }
