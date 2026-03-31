@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candy crush</title>
     <style>
-        .game-container {
+        body {
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,7 +19,11 @@
 </head>
 
 <body>
+
     <div class="game-container">
+        <div class="score-container">
+            <p>Score: <span id="score">0</span></p>
+        </div>
         <canvas id="game" width="500" height="500"></canvas>
     </div>
 </body>

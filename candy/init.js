@@ -136,12 +136,14 @@ buscarEmparejamientos = () => {
                 n = tablero[i][j];
                 a = i;
                 b = i;
+
             } else if (tablero[i][j] == n) {
                 b = i;
             } else if (tablero[i][j] != n) {
                 n = -1;
                 b = i;
             }
+
 
             if (b - a >= 2) {
                 desaparecerEmparejamientos(j, a, b);
